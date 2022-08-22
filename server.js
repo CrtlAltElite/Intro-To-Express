@@ -1,6 +1,8 @@
 // CommonJS import
 const express = require('express')
 const dotenv = require('dotenv')
+const path = require('path')
+
 // don't use ES6 modules
 // import express from 'express'
 
@@ -75,7 +77,14 @@ const people = [
 const app = express()
 dotenv.config()
 
+//set the view engine to ejs
+app.set('view engine', 'ejs')
+
+// tell Express where the view folder will live
+app.set('views', path.join(__dirname, '/src/templates/views') )
+
 app.use(express.json())
+
 
 //custom token login required middleware
 const loginRequired = function(req, res, next){
@@ -93,8 +102,17 @@ const loginRequired = function(req, res, next){
 
 app.use(['/people', '/item'],loginRequired)
 
+app.get("/", (req, res)=>{
+    res.render('index')
+})
 
-app.get("/",(req, res)=>{
+app.get("/store", (req, res)=>{
+                    // name in EJS : name in my JS
+    res.render('store', {items:items})
+})
+
+
+app.get("/welcome",(req, res)=>{
     res.send('Welcome to Express')
 })
 
